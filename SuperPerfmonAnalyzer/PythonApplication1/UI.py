@@ -5,16 +5,19 @@ from tkinter import *
 from tkinter import Menu
 from os import path
 from tkinter import filedialog
+from ttkthemes import ThemedStyle
 #from ttkthemes import themed_tk as tk   # Also imports the normal tk definitions, such as Button, Label, etc.
 from tkinter import ttk
 from tkinter.ttk import *
 from tkinter import messagebox
 
-#window = ttk.Style()
-#window.theme_use('alt')
+
+
 window = Tk()
 window.title("Perfmon Analyzer 1.0")
 
+style = ThemedStyle(window)
+style.set_theme("arc") #arc /clearlooks/black
 
 # Tab Control introduced here --------------------------------------
 tabControl = ttk.Notebook(window)  # Create Tab Control
@@ -45,32 +48,45 @@ def multiply(a,b):
     return sum_ab
 
 def todo():
+    print(file)
     messagebox.showinfo('Python Message Info Box', '通知：还没开发！！！')
 
-# PART1-----------------------------------------------------
-ttk.Label(tab1, text="Upload your perfmon file").grid(column=0, row=0, sticky='W')
+ttk.Label(tab1, text=" ").grid(column=0, row=0, sticky='E')
+
+# PART1
+ttk.Label(tab1, text="Upload your perfmon file").grid(column=0, row=1, sticky='W')
 #first button, upload file
 btn1 = ttk.Button(tab1, text="Upload", command=clicked)
-btn1.grid(column=2, row=0, sticky='W')
+btn1.grid(column=1, row=2, sticky='W')
 
-# PART2-----------------------------------------------------
+
+var = StringVar()
+var.set('Please upload  "*.blg" or "*.csv" file')
+file = Entry(tab1, textvariable=var, width = 40 )
+file.grid(column=0, row=2, sticky='W')
+
+
+
+# PART2
 ttk.Label(tab1, text="Choose a counter:").grid(column=0, row=3, sticky='W')
 # Adding a Combobox
 counter = StringVar()
 counterChosen = ttk.Combobox(tab1, width=12, textvariable=counter)
-counterChosen['values'] = ('memory', 'cpu', 'io', 'etc')
-counterChosen.grid(column=1, row=3, sticky='W')
+counterChosen['values'] = ('Memory', 'cpu', 'io', 'etc')
+counterChosen.grid(column=0, row=4, sticky='W')
 counterChosen.current(0)  # 设置初始显示值，值为元组['values']的下标
 counterChosen.config(state='readonly')  # 设为只读模式
 #second button, run analyzer
 btn2 = ttk.Button(tab1, text="Go", command=multiply)
-btn2.grid(column=2, row=3, sticky='W')
+btn2.grid(column=1, row=4, sticky='W')
 
-# PART3-----------------------------------------------------
-ttk.Label(tab1, text="No special counter, I just want to do a general check ").grid(column=0, row=4, sticky='W')
+ttk.Label(tab1, text=" ").grid(column=0, row=7, sticky='E')
+ttk.Label(tab1, text=" ").grid(column=0, row=8, sticky='E')
+# PART3
+ttk.Label(tab1, text="No special counter, I just want to do a general check ").grid(column=0, row=9, sticky='E') #,font='Calibri 10 bold'
 #first button, upload file
 btn3 = ttk.Button(tab1, text="Just Analyze for me", command= todo)
-btn3.grid(column=0, row=5, sticky='W')
+btn3.grid(column=0, row=10, sticky='W')
 
 # Using a scrolled Text control
 '''scrolW = 30;
@@ -86,13 +102,13 @@ for child in tab1.winfo_children():
 
 # ---------------Tab2控件介绍------------------#
 ttk.Label(tab2, text="Top 1 counter:").grid(column=0, row=0, sticky='W')
-canvas1 = Canvas(tab2, width=400, height=95, highlightthickness=0, bg='#FFFF00')
+canvas1 = Canvas(tab2, width=400, height=95, highlightthickness=0, bg='#FFFFFF')
 canvas1.grid(row=1, column=0)
 ttk.Label(tab2, text="Top 2 counter:").grid(column=0, row=2, sticky='W')
-canvas2 = Canvas(tab2, width=400, height=95, highlightthickness=0, bg='#FFFF00')
+canvas2 = Canvas(tab2, width=400, height=95, highlightthickness=0, bg='#FFFFFF')
 canvas2.grid(row=3, column=0)
 ttk.Label(tab2, text="Top 3 counter:").grid(column=0, row=4, sticky='W')
-canvas3 = Canvas(tab2, width=400, height=95, highlightthickness=0, bg='#FFFF00')
+canvas3 = Canvas(tab2, width=400, height=95, highlightthickness=0, bg='#FFFFFF')
 canvas3.grid(row=5, column=0)
 
 
