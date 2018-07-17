@@ -1,7 +1,14 @@
-﻿from math import sqrt
-from Parser import CounterGroup
-import os
-from Parser import Counter
+from math import sqrt
+from myClass import Counter
+from myClass import CounterGroup
+from myClass import PerfMon
+import re
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import heapq
+import tushare as ts
+import datetime
 
 def multiply(a,b):
     #a,b两个列表的数据一一对应相乘之后求和
@@ -24,15 +31,16 @@ def cal_pearson(x,y):
     molecular=sum_xy-(float(sum_x)*float(sum_y)/n)
     #计算Pearson相关系数，molecular为分子，denominator为分母
     denominator=sqrt((sum_x2-float(sum_x**2)/n)*(sum_y2-float(sum_y**2)/n))
-    if denominator == molecular:
-        return 1
-    elif denominator == 0:
+    print(molecular)
+    print(denominator)
+    if denominator == 0:
         return 0
+    elif denominator == molecular:
+        return 1
     else:
         return molecular/denominator
 
 
-print(os.path.abspath('.'))
 f=open('D:\\test.csv','r')
 counters=[]
 numj=0
@@ -49,7 +57,15 @@ for line in lines:
             params= (str(cols[i])).split('\\')
             #解析第一行,初始化counter数据,start time and end time is not needed
             #group counter instance computer
-            counters.append(Counter(timezone,params[2],"", params[3],params[4]))
+            SearchObj = re.search( r'\((.*)\)', str(params[3]), re.M|re.I)
+            instance = ""
+            if SearchObj is not None:
+                instance = SearchObj.group(1)
+           
+            group =  str(params[3]).strip("\("+instance+"\)")
+
+            print(group)
+            counters.append(Counter(timezone,params[2], instance,group,params[4]))
             i= i+1
     else:
         cols=line.strip('\n').split(',')
@@ -68,16 +84,65 @@ for line in lines:
     numj = numj+1
 
 
-xstats=counters[100].stats
-ystats=counters[700].stats
-x=[]
-y=[]
+##simple test
+def calculate(xindex, yindex):
+    xstats=counters[xindex].stats
+    ystats=counters[yindex].stats
+    x=[]
+    y=[]
 
-for i in range(len(xstats)):
-    x.append(xstats[i][1])
+    for i in range(len(xstats)):
+        x.append(xstats[i][1])
 
-for i in range(len(ystats)):
-    y.append(ystats[i][1])
+    for i in range(len(ystats)):
+        y.append(ystats[i][1])
 
-if __name__=='__main__':
-    print ("x_list,y_list的Pearson相关系数为："+str(cal_pearson(x,y)))
+    if __name__=='__main__':
+        pearson = cal_pearson(x,y)
+        print ("x_list,y_list的Pearson相关系数为："+str(pearson))
+
+    return pearson
+
+def FindCorrelation(InputCounter):
+    index = counters.index(Counter(InputCounter).getCounterName)
+    relation = []
+    for i in range(len(counters)):
+        if i!=index:
+            relation.append((counters[i], calculate(i, index)))
+    relation.sort()
+
+#compare peak time            
+def PeakMatch(xindex, yindex):
+    xstats=counters[xindex].stats
+    ystats=counters[yindex].stats
+    wave_guess(xstats)
+    wave_guess(ystats)
+
+
+    for i in range(len(xstats)):
+        x.append(xstats[i][1])
+
+    for i in range(len(ystats)):
+        y.append(ystats[i][1])
+
+
+def wave_guess(arr):
+    wn = int(len(arr)/4) #没有经验数据，先设置成1/4。
+    print(wn)
+    #计算最小的N个值，也就是认为是波谷
+    wave_crest = heapq.nlargest(wn, enumerate(arr), key=lambda x: x[1])
+    wave_crest_mean = pd.DataFrame(wave_crest).mean()
+
+    #计算最大的5个值，也认为是波峰
+    wave_base = heapq.nsmallest(wn, enumerate(arr), key=lambda x: x[1])
+    wave_base_mean = pd.DataFrame(wave_base).mean()
+
+    print("######### result #########")
+    #波峰，波谷的平均值的差，是波动周期，对于股票就是天。
+    wave_period = abs(int( wave_crest_mean[0] - wave_base_mean[0]))
+    print("wave_period_day:", wave_period)
+    print("wave_crest_mean:", round(wave_crest_mean[1],2))
+    print("wave_base_mean:", round(wave_base_mean[1],2))
+
+    wavelist = wave_crest_mean.append(wave_base_mean)
+    return wavelist
