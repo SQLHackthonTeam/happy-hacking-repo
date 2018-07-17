@@ -17,7 +17,7 @@ import sys
 import datetime
 import os
 from inspect import getsourcefile
-from myClass import PerfMon, CounterGroup, Counter
+#from myClass import PerfMon, CounterGroup, Counter
 
 
 
@@ -108,7 +108,7 @@ canvas3.grid(row=5, column=0)
 
 
 
-# ----------------菜单栏介绍-------------------#
+# ----------------菜介绍-------------------#
 
 def clicked():
     file = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) #(initialdir= path.dirname(__file__))

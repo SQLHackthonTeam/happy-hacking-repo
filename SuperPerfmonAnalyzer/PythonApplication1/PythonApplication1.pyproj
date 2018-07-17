@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b13f5284-b54d-4312-95cf-dd9f2f7ca5d3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Parser.py</StartupFile>
+    <StartupFile>UI.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
