@@ -22,6 +22,26 @@ from inspect import getsourcefile
 
 
 
+# ----------------菜介绍-------------------#
+
+def clicked():
+    file = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) #(initialdir= path.dirname(__file__))
+    convertBlgToCsv(file)
+    return file
+
+
+def multiply(a,b):
+    #a,b两个列表的数据一一对应相乘之后求和
+    sum_ab=0.0
+    for i in range(len(a)):
+        temp=a[i]*b[i]
+        sum_ab+=temp
+    return sum_ab
+
+def todo():
+    print(file)
+    messagebox.showinfo('Python Message Info Box', '通知：还没开发！！！')
+
 
 window = Tk()
 window.title("Perfmon Analyzer 1.0")
@@ -107,27 +127,6 @@ canvas3 = Canvas(tab2, width=400, height=95, highlightthickness=0, bg='#FFFFFF')
 canvas3.grid(row=5, column=0)
 
 
-
-# ----------------菜介绍-------------------#
-
-def clicked():
-    file = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) #(initialdir= path.dirname(__file__))
-
-	convertBlgToCsv(file)
-    return file
-
-
-def multiply(a,b):
-    #a,b两个列表的数据一一对应相乘之后求和
-    sum_ab=0.0
-    for i in range(len(a)):
-        temp=a[i]*b[i]
-        sum_ab+=temp
-    return sum_ab
-
-def todo():
-    print(file)
-    messagebox.showinfo('Python Message Info Box', '通知：还没开发！！！')
 
 # Change the main windows icon
 #win.iconbitmap(r'C:\Users\feng\Desktop\研.ico')
