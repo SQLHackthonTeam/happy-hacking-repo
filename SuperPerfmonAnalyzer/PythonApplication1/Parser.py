@@ -13,7 +13,8 @@ def convertBlgToCsv(path):
     filename = datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + ".csv"
 
 #    cmd = "relog " + path.encode('unicode_escape').decode() + " -f csv -o " + abspath(getsourcefile(lambda:0)) +"csvrepo\\" + filename
-    cmd = "relog " + path + " -f csv -o " + os.path.abspath(getsourcefile(lambda:0)) +"\\csvrepo\\" + filename
+    myDirname = os.path.normpath(path)
+    cmd = "relog " + myDirname + " -f csv -o " + os.path.abspath(getsourcefile(lambda:0)) +"\\csvrepo\\" + filename
 
     print(cmd)
 
