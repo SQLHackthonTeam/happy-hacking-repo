@@ -1,11 +1,27 @@
 import subprocess
 import sys
 import datetime
+import os
+from inspect import getsourcefile
+from myClass import PerfMon, CounterGroup, Counter
+
+
 
 def convertBlgToCsv(path):
     result = []
-    cmd = "relog " + path.encode('unicode_escape').decode() + " -f csv -o F:\\source\\repos\\SuperPerfmonAnalyzer\\csvrepo\\" + datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + ".csv"
+
+    filename = datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + ".csv"
+
+#    cmd = "relog " + path.encode('unicode_escape').decode() + " -f csv -o " + abspath(getsourcefile(lambda:0)) +"csvrepo\\" + filename
+    myDirname = os.path.normpath(path)
+    fileLocation = os.path.abspath(getsourcefile(lambda:0))
+    print (fileLocation)
+    parentPath = os.path.abspath(os.path.join(fileLocation, os.pardir))
+    print (parentPath)
+    cmd = "relog " + myDirname + " -f csv -o " + parentPath +"\\csvrepo\\" + filename
+
     print(cmd)
+
     process = subprocess.Popen(cmd,
                                shell=True,
                                stdout=subprocess.PIPE,
@@ -17,67 +33,3 @@ def convertBlgToCsv(path):
         print(line)
     if errcode is not None:
         raise Exception('cmd %s failed, see above for details', cmd)
-
-
-
-class PerfMon(object):
-    
-    def __init__(self, name, timezone):
-        self.name = name
-        self.timezone = timezone
-
-    def getName(self):
-        return self.name
-
-    def getStartTime(self):
-        return self.start_time
-
-    def getEndTime(self):
-        return self.end_time
-
-    def getTimezone(self):
-        return self.timezone
-
-    def setStartTime(time):
-        self.start_time = time
-
-    def setEndTime(time):
-        self.end_time = time
-    
-    def __str__(self):
-        return "%s is captured in %s" % (self.name, self.timezone)
-
-class CounterGroup(PerfMon):
-    
-    def __init__(self, timezone, group_name):
-        PerfMon.__init__(self, "Perfmon",timezone)
-        self.group_name = group_name
-
-    def setStartTime(time):
-        self.start_time = time
-
-    def setEndTime(time):
-        self.end_time = time
-
-    def getGroupName(self):
-        return self.group_name
-
-class Counter(CounterGroup):
-
-    stats = []
-    
-    def __init__(self, timezone,computer,instance, group_name, counter_name ):
-        CounterGroup.__init__(self, timezone, group_name)
-        self.counter_name = counter_name
-        self.instance = instance
-        self.computer = computer
-        self.stats =[]
-        
-    def getCounterName(self):
-        return self.counter_name
-        
-    def showGraph(self):
-        return null
-
-
-
