@@ -14,7 +14,11 @@ def convertBlgToCsv(path):
 
 #    cmd = "relog " + path.encode('unicode_escape').decode() + " -f csv -o " + abspath(getsourcefile(lambda:0)) +"csvrepo\\" + filename
     myDirname = os.path.normpath(path)
-    cmd = "relog " + myDirname + " -f csv -o " + os.path.abspath(getsourcefile(lambda:0)) +"\\csvrepo\\" + filename
+    fileLocation = os.path.abspath(getsourcefile(lambda:0))
+    print (fileLocation)
+    parentPath = os.path.abspath(os.path.join(fileLocation, os.pardir))
+    print (parentPath)
+    cmd = "relog " + myDirname + " -f csv -o " + parentPath +"\\csvrepo\\" + filename
 
     print(cmd)
 
@@ -29,8 +33,3 @@ def convertBlgToCsv(path):
         print(line)
     if errcode is not None:
         raise Exception('cmd %s failed, see above for details', cmd)
-
-
-
-
-
