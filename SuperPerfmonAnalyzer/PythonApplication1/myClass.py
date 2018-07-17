@@ -53,6 +53,9 @@ class Counter(CounterGroup):
         
     def getCounterName(self):
         return self.counter_name
+
+    def getInstance(self):
+        return self.instance
         
     def showGraph(self):
         return null

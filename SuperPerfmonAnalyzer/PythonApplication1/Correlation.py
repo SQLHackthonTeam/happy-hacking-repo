@@ -41,47 +41,48 @@ def cal_pearson(x,y):
         return molecular/denominator
 
 
-f=open('D:\\test.csv','r')
-counters=[]
-numj=0
-lines=f.readlines()
-items = []
-for line in lines:
-   #strip用于去掉换行符,split()通过指定分隔符对字符串进行切片,返回子字符串
+def readCSV(path):
+    f=open(path,'r')
+    counters=[]
+    numj=0
+    lines=f.readlines()
+    items = []
+    for line in lines:
+       #strip用于去掉换行符,split()通过指定分隔符对字符串进行切片,返回子字符串
    
-    if numj == 0:
-         cols=line.strip('\n').split('\",')
-         timezone = ((str(cols[0])).split(') ('))[1]
-         i=1
-         while(i < len(cols)):
-            params= (str(cols[i])).split('\\')
-            #解析第一行,初始化counter数据,start time and end time is not needed
-            #group counter instance computer
-            SearchObj = re.search( r'\((.*)\)', str(params[3]), re.M|re.I)
-            instance = ""
-            if SearchObj is not None:
-                instance = SearchObj.group(1)
+        if numj == 0:
+             cols=line.strip('\n').split('\",')
+             timezone = ((str(cols[0])).split(') ('))[1]
+             i=1
+             while(i < len(cols)):
+                params= (str(cols[i])).split('\\')
+                #解析第一行,初始化counter数据,start time and end time is not needed
+                #group counter instance computer
+                SearchObj = re.search( r'\((.*)\)', str(params[3]), re.M|re.I)
+                instance = ""
+                if SearchObj is not None:
+                    instance = SearchObj.group(1)
            
-            group =  str(params[3]).strip("\("+instance+"\)")
-
-            print(group)
-            counters.append(Counter(timezone,params[2], instance,group,params[4]))
-            i= i+1
-    else:
-        cols=line.strip('\n').split(',')
-        i = 1
-        while( i < len(cols)):
-            #添加counter的时间点和值信息
-            if cols[i] == '" "' :
-                cols[i] = 0
-            else:
-                cols[i] = float(cols[i].strip('"'))
+                group =  str(params[3]).strip("\("+instance+"\)")
+                counters.append(Counter(timezone,params[2], instance,group,params[4]))
+                i= i+1
+        else:
+            cols=line.strip('\n').split(',')
+            i = 1
+            while( i < len(cols)):
+                #添加counter的时间点和值信息
+                if cols[i] == '" "' :
+                    cols[i] = 0
+                else:
+                    cols[i] = float(cols[i].strip('"'))
                
-            counters[i-1].stats.append([cols[0],cols[i]])
-            i=i+1
+                counters[i-1].stats.append([cols[0],cols[i]])
+                i=i+1
 
 
-    numj = numj+1
+        numj = numj+1
+
+    return counters
 
 
 ##simple test
@@ -115,11 +116,11 @@ def FindCorrelation(InputCounter):
 def PeakMatch(xindex, yindex):
     xstats=counters[xindex].stats
     ystats=counters[yindex].stats
-    wave_guess(xstats)
-    wave_guess(ystats)
+    xwave = wave_guess(xstats)
+    ywave = wave_guess(ystats)
 
 
-    for i in range(len(xstats)):
+    for i in range(len(xwave)):
         x.append(xstats[i][1])
 
     for i in range(len(ystats)):
@@ -127,22 +128,50 @@ def PeakMatch(xindex, yindex):
 
 
 def wave_guess(arr):
-    wn = int(len(arr)/4) #没有经验数据，先设置成1/4。
+    
+    wn = int(len(arr)/10) #没有经验数据，先设置成1/10。
     print(wn)
     #计算最小的N个值，也就是认为是波谷
-    wave_crest = heapq.nlargest(wn, enumerate(arr), key=lambda x: x[1])
-    wave_crest_mean = pd.DataFrame(wave_crest).mean()
+    x= [x[1] for x in arr]
+
+    wave_crest = heapq.nlargest(wn, enumerate(x), key= lambda x: x[1] )
+    print(wave_crest)
 
     #计算最大的5个值，也认为是波峰
-    wave_base = heapq.nsmallest(wn, enumerate(arr), key=lambda x: x[1])
-    wave_base_mean = pd.DataFrame(wave_base).mean()
+    wave_base = heapq.nsmallest(wn, enumerate(x), key= lambda x:x[1])
 
     print("######### result #########")
     #波峰，波谷的平均值的差，是波动周期，对于股票就是天。
-    wave_period = abs(int( wave_crest_mean[0] - wave_base_mean[0]))
-    print("wave_period_day:", wave_period)
-    print("wave_crest_mean:", round(wave_crest_mean[1],2))
-    print("wave_base_mean:", round(wave_base_mean[1],2))
+    #wave_period = abs(int( wave_crest_mean[0] - wave_base_mean[0]))
 
-    wavelist = wave_crest_mean.append(wave_base_mean)
-    return wavelist
+   # wavelist = wave_crest_mean.append(wave_base_mean)
+
+    ############### 以下为画图显示用 ###############
+    wave_crest_x = [] #波峰x
+    wave_crest_y = [] #波峰y
+    for i,j in wave_crest:
+        wave_crest_x.append(i)
+        wave_crest_y.append(j)
+
+    wave_base_x = [] #波谷x
+    wave_base_y = [] #波谷y
+    for i,j in wave_base:
+        wave_base_x.append(i)
+        wave_base_y.append(j)
+
+    #将原始数据和波峰，波谷画到一张图上
+    plt.figure(figsize=(20,10))
+    plt.plot_date(arr[0],x)
+    plt.plot(wave_base_x, wave_base_y, 'go')#红色的点
+    plt.plot(wave_crest_x, wave_crest_y, 'ro')#蓝色的点
+    plt.grid()
+    plt.show()
+
+  
+    #return wavelist
+
+calculate(180, 414)
+print(counters[180].getGroupName())
+print(counters[180].getInstance())
+print(counters[180].getCounterName())
+wave_guess(counters[180].stats)
