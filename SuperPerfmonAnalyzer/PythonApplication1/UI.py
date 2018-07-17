@@ -2,6 +2,7 @@
 # imports
 # ======================
 from tkinter import *
+from Parser import convertBlgToCsv
 from tkinter import Menu
 from os import path
 from tkinter import filedialog
@@ -10,6 +11,15 @@ from ttkthemes import ThemedStyle
 from tkinter import ttk
 from tkinter.ttk import *
 from tkinter import messagebox
+import Parser
+import subprocess
+import sys
+import datetime
+import os
+from inspect import getsourcefile
+from myClass import PerfMon, CounterGroup, Counter
+
+
 
 
 
@@ -34,22 +44,7 @@ tabControl.pack(expand=1, fill="both")  # Pack to make visible
 
 # ---------------Tab1控件介绍------------------#
 # Modified Button Click Function
-def clicked():
-    file = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) #(initialdir= path.dirname(__file__))
-    filename= file#print(file)
-    return file
 
-def multiply(a,b):
-    #a,b两个列表的数据一一对应相乘之后求和
-    sum_ab=0.0
-    for i in range(len(a)):
-        temp=a[i]*b[i]
-        sum_ab+=temp
-    return sum_ab
-
-def todo():
-    print(file)
-    messagebox.showinfo('Python Message Info Box', '通知：还没开发！！！')
 
 ttk.Label(tab1, text=" ").grid(column=0, row=0, sticky='E')
 
@@ -115,6 +110,24 @@ canvas3.grid(row=5, column=0)
 
 # ----------------菜单栏介绍-------------------#
 
+def clicked():
+    file = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) #(initialdir= path.dirname(__file__))
+
+	convertBlgToCsv(file)
+    return file
+
+
+def multiply(a,b):
+    #a,b两个列表的数据一一对应相乘之后求和
+    sum_ab=0.0
+    for i in range(len(a)):
+        temp=a[i]*b[i]
+        sum_ab+=temp
+    return sum_ab
+
+def todo():
+    print(file)
+    messagebox.showinfo('Python Message Info Box', '通知：还没开发！！！')
 
 # Change the main windows icon
 #win.iconbitmap(r'C:\Users\feng\Desktop\研.ico')

@@ -7,12 +7,16 @@ from myClass import PerfMon, CounterGroup, Counter
 
 
 
-def convertBlgToCsv(path):
+def convertBlgToCsv(path): #delete path
     result = []
+
+	#path = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) #(initialdir= path.dirname(__file__)) set path
 
     filename = datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + ".csv"
 
-    cmd = "relog " + path.encode('unicode_escape').decode() + " -f csv -o " + abspath(getsourcefile(lambda:0)) +"csvrepo\\" + filename
+#    cmd = "relog " + path.encode('unicode_escape').decode() + " -f csv -o " + abspath(getsourcefile(lambda:0)) +"csvrepo\\" + filename
+    cmd = "relog " + path + " -f csv -o " + os.path.abspath(getsourcefile(lambda:0)) +"\\csvrepo\\" + filename
+
     print(cmd)
 
     process = subprocess.Popen(cmd,
