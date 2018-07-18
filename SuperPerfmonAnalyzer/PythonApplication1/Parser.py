@@ -33,8 +33,3 @@ def convertBlgToCsv(path):
         print(line)
     if errcode is not None:
         raise Exception('cmd %s failed, see above for details', cmd)
-
-
-
-
-

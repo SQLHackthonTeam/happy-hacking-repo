@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskName": "task-Prepare",
+      "appliesTo": "SuperPerfmonAnalyzer/PythonApplication1/Prepare.py",
+      "type": "launch"
+    }
+  ]
+}
