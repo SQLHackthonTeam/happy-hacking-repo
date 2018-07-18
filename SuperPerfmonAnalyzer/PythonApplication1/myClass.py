@@ -50,4 +50,3 @@ class Counter(CounterGroup):
     def showGraph(self):
         return null
 
-
