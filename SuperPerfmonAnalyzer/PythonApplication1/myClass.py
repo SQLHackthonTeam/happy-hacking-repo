@@ -1,9 +1,7 @@
 class PerfMon(object):
     
-    def __init__(self, name, start_time, end_time, timezone):
+    def __init__(self, name, timezone):
         self.name = name
-        self.start_time = start_time
-        self.end_time = end_time
         self.timezone = timezone
 
     def getName(self):
@@ -17,15 +15,27 @@ class PerfMon(object):
 
     def getTimezone(self):
         return self.timezone
+
+    def setStartTime(time):
+        self.start_time = time
+
+    def setEndTime(time):
+        self.end_time = time
     
     def __str__(self):
         return "%s is captured in %s" % (self.name, self.timezone)
 
 class CounterGroup(PerfMon):
     
-    def __init__(self, name, start_time, end_time, timezone, group_name):
-        PerfMon.__init__(self, name, start_time, end_time, timezone)
+    def __init__(self, timezone, group_name):
+        PerfMon.__init__(self, "Perfmon",timezone)
         self.group_name = group_name
+
+    def setStartTime(time):
+        self.start_time = time
+
+    def setEndTime(time):
+        self.end_time = time
 
     def getGroupName(self):
         return self.group_name
@@ -33,20 +43,23 @@ class CounterGroup(PerfMon):
 class Counter(CounterGroup):
 
     stats = []
-
-    def __init__(self, name, start_time, end_time, timezone, group_name, counter_name, parent, instance, computer):
-        CounterGroup.__init__(self, name, start_time, end_time, timezone, group_name)
-        self.counter_name = count_name
-        self.parent = parent
+    
+    def __init__(self, timezone,computer,instance, group_name, counter_name ):
+        CounterGroup.__init__(self, timezone, group_name)
+        self.counter_name = counter_name
+        self.group_name = group_name
         self.instance = instance
         self.computer = computer
+        self.stats =[]
         
     def getCounterName(self):
         return self.counter_name
 
-    def addStats(time,value):
-        stats.append((time,value))
-        
+    def getInstance(self):
+        return self.instance
+
+    def getGroupName(self):
+        return self.group_name
+
     def showGraph(self):
         return null
-

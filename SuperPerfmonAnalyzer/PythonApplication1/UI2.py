@@ -23,9 +23,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-
+from Correlation import Core
+from Correlation import readCounter
 
 class GUI():	
+
 	def __init__(self,master):
 		self.master = master
 		master.title("Perfmon Analyzer 1.0")
@@ -54,13 +56,19 @@ class GUI():
 		self.lablecounter = ttk.Label(master, text="Choose a counter:").grid(column=0, row=3, sticky='W')
 		# Adding a Combobox
 		self.counter = StringVar()
+		print(self.path)
 		self.counterChosen = ttk.Combobox(master, width=12, textvariable=self.counter)
 		#===========================================================================================
-		self.counterChosen['value'] = self.value #===========================================
+		print(self.value)
+		self.counterChosen['value'] = self.value 
 		self.counterChosen.grid(column=0, row=4, sticky='W')
-		self.counterChosen.current = self.counterChosen.current(0)  # 设置初始显示值，值为元组['values']的下标
-		self.counterChosen.config = self.counterChosen.config(state='readonly')  # 设为只读模式
+
+		self.counterChosen.current = self.counterChosen.current(0)  # ???????,????['values']???
+		self.counterChosen.config = self.counterChosen.config(state='readonly')  # ??????
+
+		#self.counterChosen.bind('<<ComboboxSelected>>', comboChange)
 		#second button, run analyzer
+		
 		self.btngo = ttk.Button(master, text="Go", command=self.plot)
 		self.btngo.grid(column=1, row=4, sticky='W')
 
@@ -78,28 +86,41 @@ class GUI():
 
 	def clicked(self):
 		self.path = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) #(initialdir= path.dirname(__file__))
-		convertBlgToCsv(self.path)
+		self.path = convertBlgToCsv(self.path)
+		print(self.path)
+		names = readCounter(self.path)
+		self.counterChosen['value'] = names
 		messagebox.showinfo('info','counter got!')
-		
 		return self.path
 
-
 	def plot (self):
+		self.counterChosen.current = self.counterChosen.get()
+		self.chosedCounter = self.counterChosen.get()
 		print("yoo")
-		
+		print(self.counterChosen.get())
+		print(self.path)
+		mypath = self.path
+		correlationObj = Core(mypath)
+		correlationObj.readCSV(mypath)
+		correlationObj.FindCorrelation(self.chosedCounter)
 		messagebox.showinfo('Alter','Please upload your file first! ')
 		
 
 	def todo(self):
 		
-		messagebox.showinfo('Python Message Info Box', '通知：还没开发！！！')
+		messagebox.showinfo('Python Message Info Box', '??:????!!!')
+ #Combobox change handling
+	def comboChange(self,event):
+		self.counterChosen.current = self.counterChosen.get()
+		#self.chosedCounter = self.counterChosen.index(self.counterChosen.current)
+		return self
 
 window = Tk()
 
 my_gui = GUI(window)
 #style = ThemedStyle(window)
 #style.set_theme("arc") 
-## 一次性控制各控件之间的距离
+## ?????????????
 #for child in wino.winfo_children():
 #    child.grid_configure(padx=10, pady=5)
 window.mainloop()
