@@ -12,14 +12,9 @@ def convertBlgToCsv(path):
 
     filename = datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + ".csv"
 
-#    cmd = "relog " + path.encode('unicode_escape').decode() + " -f csv -o " + abspath(getsourcefile(lambda:0)) +"csvrepo\\" + filename
-    myDirname = os.path.normpath(path)
-    fileLocation = os.path.abspath(getsourcefile(lambda:0))
-    print (fileLocation)
-    parentPath = os.path.abspath(os.path.join(fileLocation, os.pardir))
-    print (parentPath)
-    cmd = "relog " + myDirname + " -f csv -o " + parentPath +"\\csvrepo\\" + filename
-
+ 
+ #   cmd = "relog " + path.encode('unicode_escape').decode() + " -f csv -o " + abspath(getsourcefile(lambda:0)) +"csvrepo\\" + filename
+    cmd = "relog " + path + " -f csv -o " + abspath(getsourcefile(lambda:0)) +"csvrepo\\" + filename
     print(cmd)
 
     process = subprocess.Popen(cmd,
@@ -33,3 +28,8 @@ def convertBlgToCsv(path):
         print(line)
     if errcode is not None:
         raise Exception('cmd %s failed, see above for details', cmd)
+
+
+convertBlgToCsv("C:\Users\zhizhwan\source\repos\happy-hacking-repo\SuperPerfmonAnalyzer\csvrepo\SQLDIAG.BLG")
+
+

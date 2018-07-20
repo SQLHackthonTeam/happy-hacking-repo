@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b13f5284-b54d-4312-95cf-dd9f2f7ca5d3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>UI.py</StartupFile>
+    <StartupFile>Correlation.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -12,7 +12,6 @@
     <Name>PythonApplication1</Name>
     <RootNamespace>PythonApplication1</RootNamespace>
     <InterpreterId>Global|ContinuumAnalytics|Anaconda36-64</InterpreterId>
-    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,8 +22,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Correlation.py" />
-    <Compile Include="UI.py">
+    <Compile Include="Correlation.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="myClass.py">
@@ -34,9 +32,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Parser.py" />
-    <Compile Include="UI2.py">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />

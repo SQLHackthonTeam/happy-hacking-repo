@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
-    "",
     "\\SuperPerfmonAnalyzer",
+    "\\SuperPerfmonAnalyzer\\csvrepo",
     "\\SuperPerfmonAnalyzer\\PythonApplication1"
   ],
+  "SelectedNode": "\\SuperPerfmonAnalyzer\\PythonApplication1\\test.py",
   "PreviewInSolutionExplorer": false
 }
