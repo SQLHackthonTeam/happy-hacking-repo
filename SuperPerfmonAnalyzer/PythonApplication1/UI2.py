@@ -33,7 +33,7 @@ class GUI():
 		self.value = ('Null') 
 		self.path = ""
 
-		self.lable0 = ttk.Label(master, text=" ").grid(column=0, row=0, sticky='E')
+		#self.lable0 = ttk.Label(master, text=" ").grid(column=0, row=0, sticky='E')
 
 		# PART1
 		self.lableupload = ttk.Label(master, text="Upload your perfmon file").grid(column=0, row=1, sticky='W')
@@ -75,6 +75,7 @@ class GUI():
 		self.btnauto = ttk.Button(master, text="Just Analyze for me", command= self.todo)
 		self.btnauto.grid(column=0, row=10, sticky='W')
 
+		self.lable9 = ttk.Label(master, text=" ").grid(column=0, row=11, sticky='E')
 
 	def clicked(self):
 		self.path = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) #(initialdir= path.dirname(__file__))
@@ -97,9 +98,9 @@ class GUI():
 window = Tk()
 
 my_gui = GUI(window)
-#style = ThemedStyle(window)
-#style.set_theme("arc") 
+style = ThemedStyle(window)
+style.set_theme("arc") 
 ## 一次性控制各控件之间的距离
-#for child in wino.winfo_children():
-#    child.grid_configure(padx=10, pady=5)
+for child in window.winfo_children():
+    child.grid_configure(padx=10, pady=5)
 window.mainloop()
