@@ -137,7 +137,7 @@ class Core():
                 print((self.counters)[i].getCounterName())
                 self.relations.append(((self.counters)[i], self.calculate(i, index)))
         #(self.relations).sort()
-        self.relations = sorted(self.relations,key = lambda x:x[1],reverse=True) 
+        self.relations = sorted(self.relations,key = lambda x:abs(x[1]),reverse=True) 
 
         for relation in self.relations:
             print(relation)
@@ -219,10 +219,9 @@ def readCounter(path):
     #print(counterNames)
     return counterNames
 
-'''
+
 path = 'C:\\Users\\zhizhwan\\Source\\Repos\\happy-hacking-repo\\SuperPerfmonAnalyzer\\PythonApplication1\\csvrepo\\2018-07-21_113942.csv'
 correlationObj = Core(path)
 correlationObj.readCSV(path)
 chosedCounter = r'\\DPCPRDSQLN05\Process(svchost#11)\Page Faults/sec'
 correlationObj.FindCorrelation(chosedCounter)
-'''
