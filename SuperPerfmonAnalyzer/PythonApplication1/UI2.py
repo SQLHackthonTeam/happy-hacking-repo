@@ -28,7 +28,7 @@ class GUI():
         self.counterWidth = 70                #Counter Name Combobox default width
 
 
-        self.lable0 = ttk.Label(master, text=" ").grid(column=0, row=0, sticky='E')
+        self.lable0 = ttk.Label(master, text="").grid(column=0, row=0, sticky='E')
 
         #Uploading Part
         self.lableupload = ttk.Label(master, text="Choose your perfmon file").grid(column=0, row=0, sticky='W', padx=(10,10))
@@ -52,25 +52,26 @@ class GUI():
         self.counterChosen.current = self.counterChosen.current(0)  # ???????,????['values']???
         self.counterChosen.config = self.counterChosen.config(state='readonly')  # ??????
         
-        self.btngo = ttk.Button(master, text="Go", command=self.plot)
+        self.btngo = ttk.Button(master, text="Generate Report", command=self.plot)
         self.btngo.grid(column=1, row=3, sticky='E', padx=(10,10))
 
 
         #Add more space
-        self.lable7 = ttk.Label(master, text=" ").grid(column=0, row=7, sticky='E')
-        self.lable8 = ttk.Label(master, text=" ").grid(column=0, row=8, sticky='E')
-
+        self.lable7 = ttk.Label(master, text="").grid(column=0, row=7, sticky='E')
+        self.lable8 = ttk.Label(master, text="").grid(column=0, row=8, sticky='E')
+        
 
 
         # PART3
         self.lableauto = ttk.Label(master, text="AI Analyzer").grid(column=0, row=9, sticky='W', padx=(10,10)) 
 
         self.presetEnv = ttk.Combobox(master, width=20, value=["SQL Server", "Sharepoint","Windows"])
-        self.presetEnv.grid(column=0, row=10, sticky='W', padx=(10,10), pady=(0,10))
+        self.presetEnv.grid(column=0, row=10, sticky='W', padx=(10,10))
         
         self.btnauto = ttk.Button(master, text="Generate Report", command= self.todo)
-        self.btnauto.grid(column=1, row=10, sticky='W', padx=(10,10), pady=(0,10))
+        self.btnauto.grid(column=1, row=10, sticky='W', padx=(10,10))
 
+        self.lable9 = ttk.Label(master, text="").grid(column=0, row=11, sticky='E')
 
     def clicked(self):
         self.blgpath = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) 
@@ -84,7 +85,6 @@ class GUI():
     def plot (self):
         self.counterChosen.current = self.counterChosen.get()
         self.chosedCounter = self.counterChosen.get()
-        print("yoo")
         print(self.counterChosen.get())
         print(self.csvpath)
         mypath = self.csvpath
@@ -106,9 +106,9 @@ class GUI():
 window = Tk()
 
 my_gui = GUI(window)
-#style = ThemedStyle(window)
-#style.set_theme("arc") 
+style = ThemedStyle(window)
+style.set_theme("arc") 
 ## ?????????????
-#for child in wino.winfo_children():
-#    child.grid_configure(padx=10, pady=5)
+for child in window.winfo_children():
+    child.grid_configure(padx=10, pady=5)
 window.mainloop()
