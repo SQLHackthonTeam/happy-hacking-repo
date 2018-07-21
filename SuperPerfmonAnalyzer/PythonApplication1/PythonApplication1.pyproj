@@ -23,6 +23,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Correlation.py" />
     <Compile Include="UI.py">
       <SubType>Code</SubType>
     </Compile>
