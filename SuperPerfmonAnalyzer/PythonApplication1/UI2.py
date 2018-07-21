@@ -66,6 +66,7 @@ class GUI():
         self.lableauto = ttk.Label(master, text="AI Analyzer").grid(column=0, row=9, sticky='W', padx=(10,10)) 
 
         self.presetEnv = ttk.Combobox(master, width=20, value=["SQL Server", "Sharepoint","Windows"])
+        self.presetEnv.current = self.presetEnv.current(0) 
         self.presetEnv.grid(column=0, row=10, sticky='W', padx=(10,10))
         
         self.btnauto = ttk.Button(master, text="Generate Report", command= self.todo)
