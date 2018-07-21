@@ -15,6 +15,7 @@ class Core():
     path = ""
     relations = []
     def __init__(self, path):
+        self.counters = []
         self.path = path
         
     def multiply(self,a,b):
@@ -35,6 +36,10 @@ class Core():
         #求x_list、y_list的平方和
         sum_x2 = sum([pow(i,2) for i in x])
         sum_y2 = sum([pow(j,2) for j in y])
+        if n == 0:
+            print("n is")
+            print(len(x))
+            print(x)
         molecular=sum_xy-(float(sum_x)*float(sum_y)/n)
         #计算Pearson相关系数，molecular为分子，denominator为分母
         bug = sum_x2-float(sum_x**2)/n
@@ -106,9 +111,10 @@ class Core():
 
         for i in range(len(ystats)):
             y.append(ystats[i][1])
-
         pearson = self.cal_pearson(x,y)
-        print ("x_list,y_list的Pearson相关系数为："+str(pearson))
+        xname = (self.counters)[xindex].getGroupName() +"("+(self.counters)[xindex].getInstance() +")\\"+(self.counters)[xindex].getCounterName()
+        yname = (self.counters)[yindex].getGroupName() +"("+(self.counters)[yindex].getInstance() +")\\"+(self.counters)[yindex].getCounterName()
+        print (xname+","+yname+"的Pearson相关系数为："+str(pearson))
 
         return pearson
 
@@ -131,6 +137,7 @@ class Core():
                     index = i
                     break
         #calculate correlation
+        print(len(self.counters))
         for i in range(len(self.counters)):
             if i != index:
                 print((self.counters)[i].getGroupName())
