@@ -47,6 +47,7 @@ class Counter(CounterGroup):
     def __init__(self, timezone,computer,instance, group_name, counter_name ):
         CounterGroup.__init__(self, timezone, group_name)
         self.counter_name = counter_name
+        self.group_name = group_name
         self.instance = instance
         self.computer = computer
         self.stats =[]
@@ -56,6 +57,9 @@ class Counter(CounterGroup):
 
     def getInstance(self):
         return self.instance
-        
+
+    def getGroupName(self):
+        return self.group_name
+
     def showGraph(self):
         return null

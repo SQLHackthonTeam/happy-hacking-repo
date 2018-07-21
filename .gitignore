@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+/SuperPerfmonAnalyzer/PythonApplication1/csvrepo/2018-07-19_214722.csv
+/SuperPerfmonAnalyzer/PythonApplication1/csvrepo/2018-07-19_213855.csv
+/SuperPerfmonAnalyzer/PythonApplication1/csvrepo/2018-07-19_211718.csv
+/SuperPerfmonAnalyzer/PythonApplication1/csvrepo/2018-07-17_213109.csv
+/SuperPerfmonAnalyzer/PythonApplication1/csvrepo/2018-07-17_213051.csv
