@@ -6,6 +6,8 @@ from tkinter import messagebox
 from ttkthemes import ThemedStyle
 from tkinter import ttk
 from tkinter.ttk import *
+import threading
+from tkinter import  HORIZONTAL
 
 #packages for plot
 import matplotlib.pyplot as plt
@@ -20,7 +22,7 @@ class GUI():
 
     def __init__(self,master):
         self.master = master
-        master.title("Perfmon Analyzer 1.0")
+        master.title("Super Perfmon Analyzer 1.0")
 
         self.value = ("CounterName")        #Comparing Counter Name
         self.blgpath = ""                    #Temporarly Path for Perfmon Files(blg)
@@ -28,7 +30,7 @@ class GUI():
         self.counterWidth = 70                #Counter Name Combobox default width
 
 
-        self.lable0 = ttk.Label(master, text="").grid(column=0, row=0, sticky='E')
+        self.lable0 = ttk.Label(master, text="").grid(column=0, row=0, sticky='W')
 
         #Uploading Part
         self.lableupload = ttk.Label(master, text="Choose your perfmon file").grid(column=0, row=0, sticky='W', padx=(10,10))
@@ -54,11 +56,11 @@ class GUI():
         
         self.btngo = ttk.Button(master, text="Generate Report", command=self.plot)
         self.btngo.grid(column=1, row=3, sticky='E', padx=(10,10))
-
+        
 
         #Add more space
-        self.lable7 = ttk.Label(master, text="").grid(column=0, row=7, sticky='E')
-        self.lable8 = ttk.Label(master, text="").grid(column=0, row=8, sticky='E')
+        self.lable7 = ttk.Label(master, text="").grid(column=0, row=7, sticky='W')
+        self.lable8 = ttk.Label(master, text="").grid(column=0, row=8, sticky='W')
         
 
 
@@ -70,9 +72,16 @@ class GUI():
         self.presetEnv.grid(column=0, row=10, sticky='W', padx=(10,10))
         
         self.btnauto = ttk.Button(master, text="Generate Report", command= self.todo)
-        self.btnauto.grid(column=1, row=10, sticky='W', padx=(10,10))
+        self.btnauto.grid(column=1, row=10, sticky='E', padx=(10,10))
 
-        self.lable9 = ttk.Label(master, text="").grid(column=0, row=11, sticky='E')
+        self.lable11 = ttk.Label(master, text="").grid(column=0, row=11, sticky='W')
+        self.lable12 = ttk.Label(master, text="").grid(column=0, row=12, sticky='W')
+
+        # Quit window
+        self.btnquit= ttk.Button(master, text="Quit", command=master.destroy)
+        self.btnquit.grid(column=0, row=13, padx=(10,5))
+
+        self.lable13 = ttk.Label(master, text="").grid(column=0, row=14, sticky='W')
 
     def clicked(self):
         self.blgpath = filedialog.askopenfilename(filetypes=(("blg files", "*.blg"), ("csv files", "*.csv"))) 
@@ -89,9 +98,23 @@ class GUI():
         print(self.counterChosen.get())
         print(self.csvpath)
         mypath = self.csvpath
-        correlationObj = Core(mypath)
-        correlationObj.readCSV(mypath)
-        correlationObj.FindCorrelation(self.chosedCounter)
+
+        #Show progress bar when job running 
+        def real_traitement():
+            self.progress = Progressbar(orient=HORIZONTAL,length=400,  mode='indeterminate')
+            self.progress.grid(row=7)
+            self.progress.start()
+
+            correlationObj = Core(mypath)
+            correlationObj.readCSV(mypath)
+            correlationObj.FindCorrelation(self.chosedCounter)
+
+            self.progress.stop()
+            self.progress.grid_forget()
+
+        threading.Thread(target=real_traitement).start()
+
+
 #        messagebox.showinfo('Alter','Please upload your file first! ')
         
 
