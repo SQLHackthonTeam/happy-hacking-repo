@@ -1,7 +1,4 @@
-import subprocess
-import sys
-import datetime
-import os
+import subprocess, sys, datetime, os
 from inspect import getsourcefile
 from myClass import PerfMon, CounterGroup, Counter
 
