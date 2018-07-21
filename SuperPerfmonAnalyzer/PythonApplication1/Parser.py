@@ -15,7 +15,7 @@ def convertBlgToCsv(path):
     print (fileLocation)
     parentPath = os.path.abspath(os.path.join(fileLocation, os.pardir))
     print (parentPath)
-    cmd = "relog " + myDirname + " -f csv -o " + parentPath +"\\csvrepo\\" + filename
+    cmd = "relog " + '"' + myDirname + '"' + " -f csv -o " + parentPath +"\\csvrepo\\" + filename
 
     csvpath =  parentPath +"\\csvrepo\\" + filename
     print(cmd)

@@ -1,4 +1,5 @@
 from math import sqrt
+from dateutil import parser
 from myClass import Counter
 from myClass import CounterGroup
 from myClass import PerfMon
@@ -36,18 +37,14 @@ class Core():
         #求x_list、y_list的平方和
         sum_x2 = sum([pow(i,2) for i in x])
         sum_y2 = sum([pow(j,2) for j in y])
-        if n == 0:
-            print("n is")
-            print(len(x))
-            print(x)
         molecular=sum_xy-(float(sum_x)*float(sum_y)/n)
         #计算Pearson相关系数，molecular为分子，denominator为分母
         bug = sum_x2-float(sum_x**2)/n
         if bug < 0:
            return 0
         denominator=sqrt((sum_x2-float(sum_x**2)/n)*(sum_y2-float(sum_y**2)/n))
-        print(molecular)
-        print(denominator)
+#        print(molecular)
+#        print(denominator)
         if denominator == 0:
             return 0
         elif denominator == molecular:
@@ -78,20 +75,23 @@ class Core():
                     if SearchObj is not None:
                         instance = SearchObj.group(1)
            
-                    group =  str(params[3]).strip("\("+instance+"\)")
-                    self.counters.append(Counter(timezone,params[2], instance,group,params[4]))
+                    group =  str(params[3]).replace(instance,'').replace('(','').replace(')','') 
+                    (self.counters).append(Counter(timezone,params[2], instance,group,params[4]))
                     i= i+1
             else:
                 cols=line.strip('\n').split(',')
+                cols[0] = cols[0].strip('"')
                 i = 1
                 while( i < len(cols)):
                     #添加counter的时间点和值信息
                     if cols[i] == '" "' :
-                        cols[i] = 0
+                        cols[i] = 0.0
                     else:
                         cols[i] = float(cols[i].strip('"'))
-               
-                    self.counters[i-1].stats.append([cols[0],cols[i]])
+#                    dt = parser.parse(cols[0])
+#                    dt = re.sub('"', '', cols[0])
+                    dt = parser.parse(cols[0])
+                    self.counters[i-1].stats.append([dt,cols[i]])
                     i=i+1
 
 
@@ -114,7 +114,7 @@ class Core():
         pearson = self.cal_pearson(x,y)
         xname = (self.counters)[xindex].getGroupName() +"("+(self.counters)[xindex].getInstance() +")\\"+(self.counters)[xindex].getCounterName()
         yname = (self.counters)[yindex].getGroupName() +"("+(self.counters)[yindex].getInstance() +")\\"+(self.counters)[yindex].getCounterName()
-        print (xname+","+yname+"的Pearson相关系数为："+str(pearson))
+#        print (xname+","+yname+"的Pearson相关系数为："+str(pearson))
 
         return pearson
 
@@ -126,29 +126,29 @@ class Core():
         instance = ""
         if SearchObj is not None:
             instance = SearchObj.group(1)
-        group =  str(params[3]).strip("\("+instance+"\)")
+        group =  str(params[3]).replace(instance,'').replace('(','').replace(')','')
         counterName =  params[4]
 
         relation = []
         index = 0
         #find index of chosen counter
         for i in range(len(self.counters)):
-            if ((self.counters)[i].getInstance() == instance) and ((self.counters)[i].getGroupName() == group) and ((self.counters)[i].getCounterName == counterName):
+            if ((self.counters)[i].getInstance() == instance) and ((self.counters)[i].getGroupName() == group) and ((self.counters)[i].getCounterName() == counterName):
                     index = i
                     break
         #calculate correlation
-        print(len(self.counters))
+#        print(len(self.counters))
         for i in range(len(self.counters)):
             if i != index:
-                print((self.counters)[i].getGroupName())
-                print((self.counters)[i].getCounterName())
+#                print((self.counters)[i].getGroupName())
+#                print((self.counters)[i].getCounterName())
                 self.relations.append(((self.counters)[i], self.calculate(i, index)))
         #(self.relations).sort()
         self.relations = sorted(self.relations,key = lambda x:x[1],reverse=True) 
 
-        for relation in self.relations:
-            print(relation)
-        return self.relations
+#       for relation in self.relations:
+#           print(relation)
+        return (self.relations,(self.counters)[index])
 
     #compare peak time            
     def PeakMatch(xindex, yindex):
