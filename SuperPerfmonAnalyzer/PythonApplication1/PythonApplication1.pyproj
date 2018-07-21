@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b13f5284-b54d-4312-95cf-dd9f2f7ca5d3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>UI.py</StartupFile>
+    <StartupFile>Correlation.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -23,6 +23,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Correlation.py" />
     <Compile Include="UI.py">
       <SubType>Code</SubType>
     </Compile>
@@ -33,6 +34,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Parser.py" />
+    <Compile Include="UI2.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
