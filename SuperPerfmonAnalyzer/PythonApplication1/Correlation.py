@@ -37,6 +37,9 @@ class Core():
         sum_y2 = sum([pow(j,2) for j in y])
         molecular=sum_xy-(float(sum_x)*float(sum_y)/n)
         #计算Pearson相关系数，molecular为分子，denominator为分母
+        bug = sum_x2-float(sum_x**2)/n
+        if bug < 0:
+           return 0
         denominator=sqrt((sum_x2-float(sum_x**2)/n)*(sum_y2-float(sum_y**2)/n))
         print(molecular)
         print(denominator)
@@ -130,9 +133,14 @@ class Core():
         #calculate correlation
         for i in range(len(self.counters)):
             if i != index:
+                print((self.counters)[i].getGroupName())
+                print((self.counters)[i].getCounterName())
                 self.relations.append(((self.counters)[i], self.calculate(i, index)))
         #(self.relations).sort()
+        self.relations = sorted(self.relations,key = lambda x:x[1],reverse=True) 
 
+        for relation in self.relations:
+            print(relation)
         return self.relations
 
     #compare peak time            
@@ -211,4 +219,10 @@ def readCounter(path):
     #print(counterNames)
     return counterNames
 
-
+'''
+path = 'C:\\Users\\zhizhwan\\Source\\Repos\\happy-hacking-repo\\SuperPerfmonAnalyzer\\PythonApplication1\\csvrepo\\2018-07-21_113942.csv'
+correlationObj = Core(path)
+correlationObj.readCSV(path)
+chosedCounter = r'\\DPCPRDSQLN05\Process(svchost#11)\Page Faults/sec'
+correlationObj.FindCorrelation(chosedCounter)
+'''
