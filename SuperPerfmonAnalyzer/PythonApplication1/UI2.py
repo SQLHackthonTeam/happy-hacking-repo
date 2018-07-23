@@ -11,6 +11,7 @@ from tkinter.ttk import *
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+from itertools import groupby
 
 #Import Parser.py and Correlation.py
 from Parser import *
@@ -26,9 +27,13 @@ class GUI():
         self.blgpath = ""                   #Temporarly Path for Perfmon Files(blg)
         self.csvpath = ""                   #Temporarly Path for Perfmon Files(csv)
         self.counterWidth = 70              #Counter Name Combobox default width
-        self.comparingResult = ()  			#Comparing result after correlation calculation
-        self.comparingList = []             #Comparing result list
-        self.selfCounter = Counter("","","","","")        #Self Counter Group Name
+        self.comparingResult = []			#Comparing result after correlation calculation
+        self.baseCounter = Counter("","","","","")
+        self.posComparingResult = []
+        self.negComparingResult = []
+        self.posGroup = []
+        self.negGroup = []
+
 
 
         self.lable0 = ttk.Label(master, text="").grid(column=0, row=0, sticky='E')
@@ -52,8 +57,8 @@ class GUI():
         self.counterChosen = ttk.Combobox(master, width=self.counterWidth, textvariable=self.counter)
         self.counterChosen['value'] = self.value 
         self.counterChosen.grid(column=0, row=3, sticky='W', padx=(10,10))
-        self.counterChosen.current = self.counterChosen.current(0)  # ???????,????['values']???
-        self.counterChosen.config = self.counterChosen.config(state='readonly')  # ??????
+        self.counterChosen.current = self.counterChosen.current(0)  
+        self.counterChosen.config = self.counterChosen.config(state='readonly')  
         
         self.btngo = ttk.Button(master, text="Generate Report", command=self.plot)
         self.btngo.grid(column=1, row=3, sticky='E', padx=(10,10))
@@ -92,39 +97,66 @@ class GUI():
         mypath = self.csvpath
         correlationObj = Core(mypath)
         correlationObj.readCSV(mypath)
-        correlationObj.FindCorrelation(self.chosedCounter)
-        self.comparingResult = correlationObj.FindCorrelation(self.chosedCounter)
-        self.comparingList = self.comparingResult[0]
-        self.selfCounter = self.comparingResult[1]
+        
+        correlationObj.FindCorrelation(self.chosedCounter, 0.5, -0.5)
+        self.posComparingResult = correlationObj.posRelations
+        self.negComparingResult = correlationObj.negRelations
 
+        self.posComparingResult = sorted(self.posComparingResult,key = lambda x:x[0].getGroupName(),reverse=False)
+        self.negComparingResult = sorted(self.negComparingResult,key = lambda x:x[0].getGroupName(),reverse=False)
 
-        count1 = 2 
-        count2 = 5
+        self.posGroup = [list(it) for k,it in groupby(self.posComparingResult, lambda x:x[0].getGroupName())]
+        self.negGroup = [list(it) for k,it in groupby(self.negComparingResult, lambda x:x[0].getGroupName())]
 
-        for relation in self.comparingList:
-            if count2 == 0:
-                break
-            if ((self.selfCounter).getGroupName() == (relation[0]).getGroupName()) and (count1 == 0):
-                continue
-            if (self.selfCounter).getGroupName() == (relation[0]).getGroupName():
-                count1 = count1 - 1
-            print((relation[0]).getCounterName())
-            print(relation[1])
-            
-            originalCounter = np.array(self.selfCounter.stats)
-            data = np.array(relation[0].stats)
-            x1,y1 = originalCounter.T
-            x2,y2 = data.T
-            print(x1)
-            print(y1)
-            print(x2)
-            print(y2)
-#            plt.plot(x1,y)
+        self.baseCounter = correlationObj.baseCounter
+        baseCounterName = self.baseCounter.getGroupName()+self.baseCounter.getCounterName()+self.baseCounter.getInstance()
+        baseData = np.array(self.baseCounter.stats)
+        baseX, baseY = baseData.T
+
+        self.draw()
+        
+#        for relation in self.comparingResult[1:6]:
+#            print(relation[0].getInstance()+relation[0].getGroupName()+relation[0].getCounterName())
+#            print(relation[1])
+#            data = np.array(relation[0].stats)
+#            x,y = data.T
+#            print(y)
+#            print(baseY)
+#
+#            plt.plot(x, y, label=relation[0].getInstance()+relation[0].getGroupName()+relation[0].getCounterName())
+#            plt.plot(baseX, baseY, label = baseCounterName)
+#            plt.title("Comparing Graph")
+#            plt.xlabel("Timestamp")
+#            plt.ylabel("Value")
+#            plt.legend()
 #            plt.show()
 
-            count2 = count2 -1
-#        messagebox.showinfo('Alter','Please upload your file first! ')
+
+
+    def draw(self):
+        posLength = len(self.posGroup)
+        negLength = len(self.negGroup)
+        posGrid = []
+        negGrid = []
+
+        fig = plt.figure(figsize=(20,10))
+
+#        x,y = self.transform(self.baseCounter.stats)
+        self.baseCounter.transform()
+        x = self.baseCounter.xVal
+        y = self.baseCounter.yVal
+
+        for i in range(len(self.posGroup[0])):
+            self.posGroup[0][i][0].transform()
+            print(self.posGroup[0][i][0].yVal) 
+            plt.plot(x, self.posGroup[0][i][0].yVal, label=self.posGroup[0][i][0].getGroupName()+self.posGroup[0][i][0].getCounterName()+self.posGroup[0][i][0].getInstance())
+
+#            plt.subplot2grid((posLength,1), (0,0), rowspan=1, colspan=1).plot(x,[pt[i][0].yVal for pt in self.posGroup[0]],label="base counter")
+
+        plt.legend()
+        plt.show()
         
+           
 
     def todo(self):
         

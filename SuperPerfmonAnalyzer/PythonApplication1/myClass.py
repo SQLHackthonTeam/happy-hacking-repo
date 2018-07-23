@@ -1,3 +1,5 @@
+import numpy as np
+
 class PerfMon(object):
     
     def __init__(self, name, timezone):
@@ -51,6 +53,8 @@ class Counter(CounterGroup):
         self.instance = instance
         self.computer = computer
         self.stats =[]
+        self.xVal = []
+        self.yVal = []
         
     def getCounterName(self):
         return self.counter_name
@@ -60,6 +64,11 @@ class Counter(CounterGroup):
 
     def getGroupName(self):
         return self.group_name
+
+    def transform(self):
+        data = np.array(self.stats)
+        self.xVal,self.yVal = data.T
+        return self
 
     def showGraph(self):
         return null

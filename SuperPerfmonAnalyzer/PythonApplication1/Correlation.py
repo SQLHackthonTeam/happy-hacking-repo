@@ -9,12 +9,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import heapq
 import tushare as ts
+import itertools
 import datetime
 
 class Core():
     counters = []
     path = ""
-    relations = []
+    baseCounter = Counter("","","","","")
+    posRelations = []
+    negRelations = []
+
+
     def __init__(self, path):
         self.counters = []
         self.path = path
@@ -118,7 +123,7 @@ class Core():
 
         return pearson
 
-    def FindCorrelation(self, InputCounter):
+    def FindCorrelation(self, InputCounter, max, min):
         params= (str(InputCounter)).split('\\')
             #解析第一行,初始化counter数据,start time and end time is not needed
             #group counter instance computer
@@ -129,12 +134,13 @@ class Core():
         group =  str(params[3]).replace(instance,'').replace('(','').replace(')','')
         counterName =  params[4]
 
-        relation = []
+#        relation = []
         index = 0
         #find index of chosen counter
         for i in range(len(self.counters)):
             if ((self.counters)[i].getInstance() == instance) and ((self.counters)[i].getGroupName() == group) and ((self.counters)[i].getCounterName() == counterName):
                     index = i
+                    self.baseCounter = self.counters[index]
                     break
         #calculate correlation
 #        print(len(self.counters))
@@ -142,13 +148,22 @@ class Core():
             if i != index:
 #                print((self.counters)[i].getGroupName())
 #                print((self.counters)[i].getCounterName())
-                self.relations.append(((self.counters)[i], self.calculate(i, index)))
+                val = self.calculate(i, index)
+                if val >= max:
+                    self.posRelations.append(((self.counters)[i], val))
+                if val <= min:
+                    self.negRelations.append(((self.counters)[i], val))
         #(self.relations).sort()
-        self.relations = sorted(self.relations,key = lambda x:x[1],reverse=True) 
+        self.posRelations = sorted(self.posRelations,key = lambda x:x[1],reverse=True) 
+        self.negRelations = sorted(self.negRelations,key = lambda x:x[1],reverse=False)
 
-#       for relation in self.relations:
-#           print(relation)
-        return (self.relations,(self.counters)[index])
+#        self.posRelations.insert(0,(self.counters[index],2))
+#        self.negRelations.insert(0,(self.counters[index],2))
+#        print("after insert")
+#        for relation in self.relations:
+#            print(relation)
+#        print("before return")
+        return self.posRelations
 
     #compare peak time            
     def PeakMatch(xindex, yindex):
@@ -164,6 +179,10 @@ class Core():
         for i in range(len(ystats)):
             y.append(ystats[i][1])
 
+    def transform(self, stats):
+        data = np.array(stats)
+        x,y = data.T
+        return y
 
     def wave_guess(arr):
     
