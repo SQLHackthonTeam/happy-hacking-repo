@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from itertools import groupby
+from math import *
 
 #Import Parser.py and Correlation.py
 from Parser import *
@@ -98,7 +99,7 @@ class GUI():
         correlationObj = Core(mypath)
         correlationObj.readCSV(mypath)
         
-        correlationObj.FindCorrelation(self.chosedCounter, 0.5, -0.5)
+        correlationObj.FindCorrelation(self.chosedCounter, 0.75, -0.75)
         self.posComparingResult = correlationObj.posRelations
         self.negComparingResult = correlationObj.negRelations
 
@@ -131,31 +132,60 @@ class GUI():
 #            plt.legend()
 #            plt.show()
 
-
+    def calGrid(self,num):
+        x = int(sqrt(num))
+        if x*x > num:
+            return x,x
+        elif x*(x+1) > num:
+            return (x+1),x
+        else:
+            return (x+1),(x+1)
 
     def draw(self):
         posLength = len(self.posGroup)
         negLength = len(self.negGroup)
+
         posGrid = []
         negGrid = []
 
-        fig = plt.figure(figsize=(20,10))
+        posX, posY = self.calGrid(posLength)
+        negX, negY = self.calGrid(negLength)
+
+        posFig = plt.figure(figsize=(posX*4,posY*4))
 
 #        x,y = self.transform(self.baseCounter.stats)
         self.baseCounter.transform()
         x = self.baseCounter.xVal
         y = self.baseCounter.yVal
 
-        for i in range(len(self.posGroup[0])):
-            self.posGroup[0][i][0].transform()
-            print(self.posGroup[0][i][0].yVal) 
-            plt.plot(x, self.posGroup[0][i][0].yVal, label=self.posGroup[0][i][0].getGroupName()+self.posGroup[0][i][0].getCounterName()+self.posGroup[0][i][0].getInstance())
-
+        
+        for j in range(posLength):
+            ax = plt.subplot2grid((posX,posY), (int(j/posY),(j%posY)), rowspan=1, colspan=1)
+            for i in range(len(self.posGroup[j])):
+                self.posGroup[j][i][0].transform()
+#                print(self.posGroup[j][i][0].yVal) 
+                ax.plot(x, self.posGroup[j][i][0].yVal, label=self.posGroup[j][i][0].getGroupName()+self.posGroup[j][i][0].getCounterName()+self.posGroup[j][i][0].getInstance())
+                ax.set_title(self.posGroup[j][i][0].getGroupName())
+                ax.set_xlabel("TIMESTAMP")
+                ax.set_ylabel("VALUE")
+#        plt.tight_layout()
+#        plt.legend() 
 #            plt.subplot2grid((posLength,1), (0,0), rowspan=1, colspan=1).plot(x,[pt[i][0].yVal for pt in self.posGroup[0]],label="base counter")
 
-        plt.legend()
+        negFig = plt.figure(figsize=(negX*4,negY*4))
+      
+        for j in range(negLength):
+            ax = plt.subplot2grid((negX,negY), (int(j/negY),(j%negY)), rowspan=1, colspan=1)
+            for i in range(len(self.negGroup[j])):
+                self.negGroup[j][i][0].transform()
+                print(self.negGroup[j][i][0].yVal) 
+                ax.plot(x, self.negGroup[j][i][0].yVal, label=self.negGroup[j][i][0].getGroupName()+self.negGroup[j][i][0].getCounterName()+self.negGroup[j][i][0].getInstance())
+                ax.set_title(self.negGroup[j][i][0].getGroupName())
+                ax.set_xlabel("TIMESTAMP")
+                ax.set_ylabel("VALUE")
+        plt.tight_layout()
+        plt.legend() 
         plt.show()
-        
            
 
     def todo(self):
