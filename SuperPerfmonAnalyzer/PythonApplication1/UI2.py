@@ -64,16 +64,19 @@ class GUI():
         self.btngo = ttk.Button(master, text="Generate Report", command=self.plot)
         self.btngo.grid(column=1, row=3, sticky='E', padx=(10,10))
 
+        self.btnadvance = ttk.Button(master, text="Advance")
+        self.btnadvance.grid(column=1, row=4, sticky='E', padx=(10,10))
+
 
         #Add more space
         self.lable7 = ttk.Label(master, text="").grid(column=0, row=7, sticky='E')
         self.lable8 = ttk.Label(master, text="").grid(column=0, row=8, sticky='E')
         
         
-        #AI Analyzer
-        self.lableauto = ttk.Label(master, text="AI Analyzer").grid(column=0, row=9, sticky='W', padx=(10,10)) 
+        #Smart Analyzer
+        self.lableauto = ttk.Label(master, text="Smart Analyzer").grid(column=0, row=9, sticky='W', padx=(10,10)) 
 
-        self.presetEnv = ttk.Combobox(master, width=20, value=["SQL Server", "Sharepoint","Windows"])
+        self.presetEnv = ttk.Combobox(master, width=20, value=["SQL Server", "Sharepoint","Windows","DynamicsAX"])
         self.presetEnv.grid(column=0, row=10, sticky='W', padx=(10,10))
         
         self.btnauto = ttk.Button(master, text="Generate Report", command= self.todo)
@@ -151,13 +154,23 @@ class GUI():
         posX, posY = self.calGrid(posLength)
         negX, negY = self.calGrid(negLength)
 
-        posFig = plt.figure(figsize=(posX*4,posY*4))
+
 
 #        x,y = self.transform(self.baseCounter.stats)
         self.baseCounter.transform()
         x = self.baseCounter.xVal
         y = self.baseCounter.yVal
 
+        baseFig = plt.figure(figsize=(8,8))
+
+        plt.plot(x,y,label=self.baseCounter.getGroupName()+self.baseCounter.getCounterName()+self.baseCounter.getInstance())
+
+        baseFig.canvas.set_window_title('Base Counter')
+
+        plt.legend()
+        plt.tight_layout()
+
+        posFig = plt.figure(figsize=(posX*4,posY*4))
         
         for j in range(posLength):
             ax = plt.subplot2grid((posX,posY), (int(j/posY),(j%posY)), rowspan=1, colspan=1)
@@ -168,7 +181,9 @@ class GUI():
                 ax.set_title(self.posGroup[j][i][0].getGroupName())
                 ax.set_xlabel("TIMESTAMP")
                 ax.set_ylabel("VALUE")
-#        plt.tight_layout()
+        posFig.canvas.set_window_title('Positive Correlations')
+        plt.legend() 
+        plt.tight_layout()
 #        plt.legend() 
 #            plt.subplot2grid((posLength,1), (0,0), rowspan=1, colspan=1).plot(x,[pt[i][0].yVal for pt in self.posGroup[0]],label="base counter")
 
@@ -178,11 +193,12 @@ class GUI():
             ax = plt.subplot2grid((negX,negY), (int(j/negY),(j%negY)), rowspan=1, colspan=1)
             for i in range(len(self.negGroup[j])):
                 self.negGroup[j][i][0].transform()
-                print(self.negGroup[j][i][0].yVal) 
+#                print(self.negGroup[j][i][0].yVal) 
                 ax.plot(x, self.negGroup[j][i][0].yVal, label=self.negGroup[j][i][0].getGroupName()+self.negGroup[j][i][0].getCounterName()+self.negGroup[j][i][0].getInstance())
                 ax.set_title(self.negGroup[j][i][0].getGroupName())
                 ax.set_xlabel("TIMESTAMP")
                 ax.set_ylabel("VALUE")
+        negFig.canvas.set_window_title('Negative Correlations')
         plt.tight_layout()
         plt.legend() 
         plt.show()
